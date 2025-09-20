@@ -1,0 +1,24 @@
+name: Stop EC2 Instance
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  stop_ec2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1 # Replace with your EC2 instance's region
+
+      - name: Stop EC2 Instance
+        run: |
+          aws ec2 stop-instances --instance-ids ${{ secrets.AWS_EC2_INSTANCE_ID }}
+        env:
+          AWS_DEFAULT_REGION: ap-south-1 # Ensure this matches the region in the configure-aws-credentials step
